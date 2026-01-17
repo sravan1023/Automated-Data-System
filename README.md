@@ -1,4 +1,4 @@
-# AutoDocs AI
+# FlowDocs AI
 
 Automated document generation platform that transforms your data into beautifully formatted PDFs using customizable templates.
 
@@ -58,27 +58,6 @@ npm run dev
 
 Visit [http://localhost:3000](http://localhost:3000)
 
-## Project Structure
-
-```
-├── app/                   # FastAPI backend
-│   ├── api/              # API routes
-│   ├── models/           # Database models
-│   ├── schemas/          # Pydantic schemas
-│   ├── services/         # Business logic
-│   └── workers/          # Celery tasks
-├── src/                   # Next.js frontend
-│   ├── app/              # Pages
-│   ├── components/       # React components
-│   └── lib/              # Utilities
-├── alembic/              # Database migrations
-└── infrastructure/       # Docker configs
-```
-
-## API Documentation
-
-- Swagger UI: http://localhost:8000/api/docs
-- ReDoc: http://localhost:8000/api/redoc
 
 ## License
 
