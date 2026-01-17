@@ -1,4 +1,7 @@
-# Root .gitignore for AutoDocs AI
+# Root .gitignore for FlowDoc
+
+# TypeScript build artifacts
+*.tsbuildinfo
 
 # Python
 __pycache__/
