@@ -64,10 +64,14 @@ services:
 
   # FastAPI Backend
   backend:
-    build: ../../src/server
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    build:
+      context: ../..
+      dockerfile: server/Dockerfile
+    command: uvicorn server.main:app --host 0.0.0.0 --port 8000 --reload
+    working_dir: /app
     volumes:
-      - ../../src/server:/app
+      - ../../server:/app/server
+      - ../../requirements.txt:/app/requirements.txt
     ports:
       - "8000:8000"
     environment:
@@ -94,10 +98,14 @@ services:
 
   # Celery Worker
   worker:
-    build: ../../src/server
-    command: celery -A app.workers.celery_app worker --loglevel=info -Q ingest,render,package
+    build:
+      context: ../..
+      dockerfile: server/Dockerfile
+    command: celery -A server.workers.celery_app worker --loglevel=info -Q ingest,render,package
+    working_dir: /app
     volumes:
-      - ../../src/server:/app
+      - ../../server:/app/server
+      - ../../requirements.txt:/app/requirements.txt
     environment:
       - APP_ENV=development
       - SECRET_KEY=dev-secret-key-change-in-production
@@ -116,10 +124,14 @@ services:
 
   # Celery Beat (Scheduler)
   beat:
-    build: ../../src/server
-    command: celery -A app.workers.celery_app beat --loglevel=info
+    build:
+      context: ../..
+      dockerfile: server/Dockerfile
+    command: celery -A server.workers.celery_app beat --loglevel=info
+    working_dir: /app
     volumes:
-      - ../../src/server:/app
+      - ../../server:/app/server
+      - ../../requirements.txt:/app/requirements.txt
     environment:
       - REDIS_URL=redis://redis:6379/0
       - CELERY_BROKER_URL=redis://redis:6379/0

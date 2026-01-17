@@ -47,7 +47,7 @@ alembic upgrade head
 
 4. Start Celery worker
 ```bash
-celery -A app.workers.celery_app worker --loglevel=info
+celery -A server.workers.celery_app worker --loglevel=info
 ```
 
 5. Set up
