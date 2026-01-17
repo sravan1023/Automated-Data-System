@@ -1,4 +1,4 @@
-# AutoDocs AI
+# FLowDoc
 
 Automated document generation platform that transforms your data into beautifully formatted PDFs using customizable templates.
 
@@ -19,66 +19,108 @@ Automated document generation platform that transforms your data into beautifull
 
 ### Prerequisites
 
-- Docker & Docker Compose
-- Node.js 20+
-- Python 3.11+
+- **Docker Desktop** (Windows/Mac) or Docker & Docker Compose (Linux)
+- **Node.js 20+** and npm
+- Git
 
-### Setup
+### Setup & Run
 
-1. Clone the repository
+#### 1. Clone the repository
 ```bash
-git clone https://github.com/sravan1023/flowdoc
-cd flowdoc
+git clone https://github.com/sravan1023/Automated-Data-System.git
+cd Automated-Data-System
 ```
 
-2. Start infrastructure (PostgreSQL, Redis, MinIO)
+#### 2. Configure environment
 ```bash
-docker-compose -f infrastructure/docker/docker-compose.yml up -d
+cp .env.example .env
+
+# Edit .env if needed (default values work for local development)
 ```
 
-3. Set up backend
+#### 3. Start all backend services (Docker)
 ```bash
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-pip install -r requirements.txt
-cp .env.example .env  # Update with your configuration
-alembic upgrade head
+cd infrastructure/docker
+docker compose up -d
 ```
 
-4. Start Celery worker
+This starts:
+- PostgreSQL (database) on port 5432
+- Redis (cache/queue) on port 6379
+- MinIO (storage) on ports 9000-9001
+- FastAPI backend on port 8000
+- Celery worker (PDF generation)
+- Celery beat (scheduled tasks)
+
+#### 4. Run database migrations
 ```bash
-celery -A server.workers.celery_app worker --loglevel=info
+# From the project root
+docker exec docker-backend-1 alembic upgrade head
 ```
 
-5. Set up
+#### 5. Install dependencies and start Next.js
 ```bash
+# From the project root
 npm install
 npm run dev
 ```
 
-Visit [http://localhost:3000](http://localhost:3000)
+#### 6. Access the application
+- **Web App:** http://localhost:3000
+- **MinIO Console:** http://localhost:9001 (minioadmin / minioadmin)
+
+### Verify Setup
+
+Check if all services are running:
+```bash
+cd infrastructure/docker
+docker compose ps
+```
+
+All containers should show "Up" or "healthy" status.
+
+### Stop Services
+
+```bash
+# Stop all Docker services
+cd infrastructure/docker
+docker compose down
+```
+
+### Troubleshooting
+
+**Docker services not starting:**
+```bash
+docker compose logs backend
+docker compose logs worker
+```
+
+**Database connection errors:**
+```bash
+# Restart backend after database is fully ready
+docker compose restart backend
+```
 
 ## Project Structure
 
 ```
-├── app/                   # FastAPI backend
-│   ├── api/              # API routes
-│   ├── models/           # Database models
-│   ├── schemas/          # Pydantic schemas
-│   ├── services/         # Business logic
-│   └── workers/          # Celery tasks
-├── src/                   # Next.js frontend
-│   ├── app/              # Pages
-│   ├── components/       # React components
-│   └── lib/              # Utilities
-├── alembic/              # Database migrations
-└── infrastructure/       # Docker configs
+├── server/               # FastAPI backend
+│   ├── api/             # API routes
+│   ├── models/          # Database models
+│   ├── schemas/         # Pydantic schemas
+│   ├── services/        # Business logic
+│   └── workers/         # Celery tasks
+├── src/                 # Next.js frontend
+│   ├── app/            # App Router pages
+│   ├── components/     # React components
+│   └── lib/            # Utilities & API client
+├── alembic/            # Database migrations
+├── infrastructure/     # Docker configs
+│   └── docker/         # docker-compose.yml
+├── .env                
+└── README.md
 ```
 
-## API Documentation
-
-- Swagger UI: http://localhost:8000/api/docs
-- ReDoc: http://localhost:8000/api/redoc
 
 ## License
 
