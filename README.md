@@ -1,6 +1,5 @@
-# FLowDoc
-
-Automated document generation platform that transforms your data into beautifully formatted PDFs using customizable templates.
+# Automated Data System (FLowDoc)
+Automated document generation platform that transforms your data into formatted PDFs using customizable templates.
 
 ## Features
 
